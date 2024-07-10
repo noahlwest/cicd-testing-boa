@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: moderately-restrictive-network-policy
+spec:
+  podSelector: {}  # Selects all pods in the namespace
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:   # Allow incoming traffic only from these sources:
+    - podSelector: {}  # Allow traffic from other pods in the same namespace
+    - namespaceSelector:
+        matchLabels:
+          purpose: monitoring  # Allow traffic from pods in namespaces labeled for monitoring (e.g., Prometheus)
+    ports:  
+    - protocol: TCP
+      port: 80   # Allow incoming traffic on port 80 (HTTP)
+  egress:
+  - to:   # Allow outgoing traffic only to these destinations:
+    - podSelector: {}  # Allow traffic to other pods in the same namespace
+    - namespaceSelector:
+        matchLabels:
+          purpose: logging   # Allow traffic to pods in namespaces labeled for logging (e.g., Fluentd)
+    - ipBlock:
+        cidr: 10.0.0.0/8  # Allow traffic to the 10.0.0.0/8 IP range (internal network)
+    ports:
+    - protocol: UDP
+      port: 53  # Allow outgoing DNS traffic (UDP port 53)
