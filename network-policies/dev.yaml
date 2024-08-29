@@ -7,7 +7,7 @@ spec:
   policyTypes:
   - Ingress
   - Egress
-  ingress:
+  ingress:SYNTAX ERROR HERE <------
   - from:   # Allow incoming traffic only from these sources:
     - podSelector: {}  # Allow traffic from other pods in the same namespace
     - namespaceSelector:
